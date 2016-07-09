@@ -13,13 +13,15 @@ public class Sword {
 		int w = bi.getWidth();
 		int h = bi.getHeight();
 		int[] basePixels = bi.getRGB(0, 0, w, h, null, 0, w);
-		if (args.length == 1)
-			processForColor(w, h, basePixels, Integer.valueOf(args[0]));
+		if (args.length >= 1)
+			processForColor(w, h, basePixels, Integer.valueOf(args[0]), args.length == 2 ? new File(args[1]) : null);
 		else
 			main2(w, h, basePixels);
 	}
 
-	public static void processForColor(int w, int h, int[] basePixels, int mask) {
+	public static void processForColor(int w, int h, int[] basePixels, int mask, File file) {
+		if (file == null)
+			file = new File("sword_color_" + Integer.toHexString(mask).substring(1) + ".png");
 		int[] px = Arrays.copyOf(basePixels, basePixels.length);
 		Pickaxe.process2(px, 13, 0, w, mask);
 		Pickaxe.process2(px, 14, 0, w, mask);
@@ -71,6 +73,12 @@ public class Sword {
 		Pickaxe.process2(px, 8, 8, w, mask);
 		Pickaxe.process2(px, 9, 8, w, mask);
 
+		Pickaxe.process2(px, 6, 9, w, mask);
+		Pickaxe.process2(px, 7, 9, w, mask);
+		Pickaxe.process2(px, 8, 9, w, mask);
+
+		//
+
 		Pickaxe.process2(px, 2, 6, w, mask);
 		Pickaxe.process2(px, 3, 6, w, mask);
 
@@ -118,8 +126,7 @@ public class Sword {
 		BufferedImage result = new BufferedImage(w, h, BufferedImage.TYPE_4BYTE_ABGR);
 		result.setRGB(0, 0, w, h, px, 0, w);
 		try {
-			ImageIO.write(result, "png",
-					new File("sword_color_" + Integer.toHexString(mask).substring(1) + ".png"));
+			ImageIO.write(result, "png", file);
 		} catch (Exception e) {
 			// TODO 自動生成された catch ブロック
 			e.printStackTrace();
@@ -128,6 +135,6 @@ public class Sword {
 
 	public static void main2(int w, int h, int[] basePixels) {
 		Arrays.asList(0xf1A237E, 0xf303F9F, 0xf9FA8DA, 0xf1565C0, 0xf0277BD, 0xf2E7D32, 0xf76FF03, 0xfEF6C00).stream()
-				.forEach(mask -> processForColor(w, h, basePixels, mask));
+				.forEach(mask -> processForColor(w, h, basePixels, mask, null));
 	}
 }
